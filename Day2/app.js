@@ -66,14 +66,6 @@ function start(inputFile) {
         console.log(round, "ena");
         for (const keyInRound in round) {
           elfBag[keyInRound] = elfBag[keyInRound] - round[keyInRound];
-          //console.log(round[keyInRound]);
-          //console.log(elfBag[keyInRound]);
-
-          //console.log(round[keyInElfsBag], "pred Ifom");
-          //elfBag[keyInElfsBag] = elfBag[keyInElfsBag] - round[keyInElfsBag];
-          //if (round[keyInElfsBag]) {
-          //}
-          //console.log(elfBag);
         }
         if (elfBag.red >= 0 && elfBag.green >= 0 && elfBag.blue >= 0) {
           game.possible = true;
