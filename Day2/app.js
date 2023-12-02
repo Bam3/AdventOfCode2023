@@ -18,11 +18,6 @@ function start(inputFile) {
   //initial obj
   let games = [];
   let roundObj = {};
-  let neededElfBag = {
-    red: 0,
-    blue: 0,
-    green: 0,
-  };
   //Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
   arrayCSV.forEach((game) => {
     let gameObj = {
@@ -49,7 +44,7 @@ function start(inputFile) {
     });
     games.push(gameObj);
   });
-  console.log(games);
+
   //The Elf would first like to know which games would have been possible if the bag contained
   //only 12 red cubes,
   //13 green cubes,
@@ -60,40 +55,31 @@ function start(inputFile) {
   // impossible : Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
   num = 0;
   games.forEach((game) => {
-    neededElfBag = {
-      red: 0,
-      blue: 0,
-      green: 0,
-    };
+    console.log(game.rounds, "runde");
     game.rounds.forEach((round) => {
-      //elfBag = {
-      //  red: 12,
-      //  green: 13,
-      //  blue: 14,
-      //};
-      //if (game.possible) {
-      //console.log(round, "ena");
-      for (const keyInNeededElfBag in neededElfBag) {
-        //elfBag[keyInRound] = elfBag[keyInRound] - round[keyInRound];
-        //console.log(round[keyInNeededElfBag]);
-        if (round[keyInNeededElfBag] > neededElfBag[keyInNeededElfBag]) {
-          neededElfBag[keyInNeededElfBag] = round[keyInNeededElfBag];
+      elfBag = {
+        red: 12,
+        green: 13,
+        blue: 14,
+      };
+      if (game.possible) {
+        console.log(round, "ena");
+        for (const keyInRound in round) {
+          elfBag[keyInRound] = elfBag[keyInRound] - round[keyInRound];
+        }
+        if (elfBag.red >= 0 && elfBag.green >= 0 && elfBag.blue >= 0) {
+          game.possible = true;
+        } else {
+          game.possible = false;
         }
       }
-      //if (elfBag.red >= 0 && elfBag.green >= 0 && elfBag.blue >= 0) {
-      //  game.possible = true;
-      //} else {
-      //  game.possible = false;
-      //}
-      //}
     });
-    console.log(neededElfBag);
   });
-  console.log(result);
-  //console.log(games);
+  //console.log(elfBag);
+  console.log(games);
 
   games.forEach((game) => {
     game.possible ? (result += game.id) : (result = result);
   });
-  //console.log(result);
+  console.log(result);
 }
