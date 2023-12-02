@@ -16,48 +16,76 @@ function loadHandler(event) {
 function start(inputFile) {
   let result = 0;
   const values = {
-    one: 1,
-    two: 2,
-    three: 3,
-    four: 4,
-    five: 5,
-    six: 6,
-    seven: 7,
-    eight: 8,
-    nine: 9,
+    one: "1",
+    two: "2",
+    three: "3",
+    four: "4",
+    five: "5",
+    six: "6",
+    seven: "7",
+    eight: "8",
+    nine: "9",
   };
+  const reverseValues = {
+    eno: "1",
+    owt: "2",
+    eerht: "3",
+    ruof: "4",
+    evif: "5",
+    xis: "6",
+    neves: "7",
+    thgie: "8",
+    enin: "9",
+  };
+  let num = 1;
   arrayCSV = inputFile.trim().split("\n");
+  //xtwone3four - iterator
   for (let iterator of arrayCSV) {
-    let newArray = [];
-    //if first and last char is number, then write it in result
-    if (
-      Number.isInteger(parseInt(iterator[0])) &&
-      Number.isInteger(parseInt(iterator[iterator.length - 1]))
-    ) {
-      console.log(iterator, "začetek in konec je cifra");
-      result = parseInt(iterator[0] + iterator[iterator.length - 1]) + result;
-    } else {
-      // else replace words with numbers
-      console.log(iterator, "iterator pred replace");
+    let firstNumberArr = [];
+    let lastNumberArr = [];
+    let firstNumber = [];
+    let lastNumber = [];
+
+    [...iterator].forEach((elementInIterator) => {
+      // otherwise put it in check array
+      firstNumber.push(elementInIterator);
+      let checkString = firstNumber.join("");
+      //find is there is number written as word
       for (const key in values) {
-        iterator = iterator.replaceAll(key, values[key]);
+        checkString = checkString.replace(key, values[key]);
+        firstNumber = checkString.split("");
       }
-      console.log(iterator);
-      [...iterator].forEach((element) => {
+      //if chare is number put it in a numbers array
+      firstNumber.forEach((element) => {
         if (!isNaN(element)) {
-          newArray.push(element);
+          firstNumberArr.push(element);
         }
       });
-      result = parseInt(newArray[0] + newArray[newArray.length - 1]) + result;
-    }
+    });
+
+    [...iterator].reverse().forEach((elementInIterator) => {
+      // otherwise put it in check array
+      lastNumber.push(elementInIterator);
+      let checkString = lastNumber.join("");
+      //find is there is number written as word
+      for (const key in reverseValues) {
+        checkString = checkString.replace(key, reverseValues[key]);
+        lastNumber = checkString.split("");
+        //console.log(lastNumber, "kaj");
+      }
+      //if chare is number put it in a numbers array
+      lastNumber.forEach((element) => {
+        if (!isNaN(element)) {
+          lastNumberArr.push(element);
+        }
+      });
+    });
+    console.log(firstNumberArr[0], "prva");
+    console.log(lastNumberArr[0], "druga");
+    let newInteger = parseInt(firstNumberArr[0] + lastNumberArr[0]);
+    //console.log(newInteger, `vrstica: ${num++}`);
+    result += newInteger;
   }
 
   console.log(`Sum of number is: ${result}`);
-}
-
-function checkIfNumber(x) {
-  if (isNaN(x)) {
-    return "x";
-  }
-  return x;
 }
