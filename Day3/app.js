@@ -14,72 +14,123 @@ function loadHandler(event) {
 }
 
 function start(inputFile) {
-  arrayCSV = inputFile.trim().split("\n");
-  //initial obj
-  let games = [];
-  let roundObj = {};
-  //Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
-  arrayCSV.forEach((game) => {
-    let gameObj = {
-      id: 0,
-      rounds: [],
-      possible: true,
-    };
-    //id of current game
-    let id = parseInt(game.split(" ")[1]);
-    gameObj.id = id;
-    //rounds of current game
-    let rounds = game.split(":")[1].split(";");
-    //[' 3 blue, 4 red', ' 1 red, 2 green, 6 blue', ' 2 green'
-    rounds.forEach((round) => {
-      let oneRound = round.split(",");
-      //[" 3 blue", " 4 red"];
-      oneRound.forEach((r) => {
-        nameOf = r.split(" ")[2];
-        value = parseInt(r.split(" ")[1]);
-        roundObj[nameOf] = value;
-      });
-      gameObj.rounds.push(roundObj);
-      roundObj = {};
-    });
-    games.push(gameObj);
-  });
+  let inputFileSplit = inputFile.trim().split("\n");
+  let area = [];
+  let searchNum = [];
 
-  //The Elf would first like to know which games would have been possible if the bag contained
-  //only 12 red cubes,
-  //13 green cubes,
-  //and 14 blue cubes?
-  let elfBag = {};
-  let result = 0;
-  // possible :   Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
-  // impossible : Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
-  num = 0;
-  games.forEach((game) => {
-    console.log(game.rounds, "runde");
-    game.rounds.forEach((round) => {
-      elfBag = {
-        red: 12,
-        green: 13,
-        blue: 14,
-      };
-      if (game.possible) {
-        console.log(round, "ena");
-        for (const keyInRound in round) {
-          elfBag[keyInRound] = elfBag[keyInRound] - round[keyInRound];
+  inputFileSplit.map((line) => {
+    area.push(line.split(""));
+  });
+  // 10 x 10
+  let colAreaLimit = area.length - 1;
+  let rowAreaLimitRow = area[0].length - 1;
+  console.log(area.length, colAreaLimit);
+  console.log(area[0].length, rowAreaLimitRow);
+
+  //row ->
+  //| col
+  //v
+  //  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+  // ['4', '6', '7', '.', '.', '1', '1', '4', '.', '.']
+  // ['.', '.', '.', '*', '.', '.', '.', '.', '.', '.']
+  // ['.', '.', '3', '5', '.', '.', '6', '3', '3', '.']
+  // ['.', '.', '.', '.', '.', '.', '#', '.', '.', '.']
+  // ['6', '1', '7', '*', '.', '.', '.', '.', '.', '.']
+  // ['.', '.', '.', '.', '.', '+', '.', '5', '8', '.']
+  // ['.', '.', '5', '9', '2', '.', '.', '.', '.', '.']
+  // ['.', '.', '.', '.', '.', '.', '7', '5', '5', '.']
+  // ['.', '.', '.', '$', '.', '*', '.', '.', '.', '.']
+  // ['.', '6', '6', '4', '.', '5', '9', '8', '.', '.']
+  for (let col = 0; col < area.length; col++) {
+    let tempContainer = [];
+    for (let row = 0; row < area[col].length; row++) {
+      //console.log(col, row);
+      //if number go in
+      if (isNumber(area[col][row])) {
+        if (
+          col + 1 <= colAreaLimit &&
+          row + 1 <= rowAreaLimitRow &&
+          isSymbol(area[col + 1][row + 1])
+        ) {
+          tempContainer.push(area[col][row], "Sym");
         }
-        if (elfBag.red >= 0 && elfBag.green >= 0 && elfBag.blue >= 0) {
-          game.possible = true;
+        //if down is symbol then valid
+        else if (col + 1 <= colAreaLimit && isSymbol(area[col + 1][row])) {
+          tempContainer.push(area[col][row], "Sym");
+        }
+        //if down left diagonal is symbol then valid
+        else if (
+          col + 1 <= colAreaLimit &&
+          row - 1 >= 0 &&
+          isSymbol(area[col + 1][row - 1])
+        ) {
+          tempContainer.push(area[col][row], "Sym");
+        }
+        //if up left diagonal is symbol then valid
+        else if (
+          col - 1 >= 0 &&
+          row - 1 >= 0 &&
+          isSymbol(area[col - 1][row - 1])
+        ) {
+          tempContainer.push(area[col][row], "Sym");
+        }
+        //if up is symbol then valid
+        else if (col - 1 >= 0 && isSymbol(area[col - 1][row])) {
+          tempContainer.push(area[col][row], "Sym");
+        }
+        //if up right diagonal is symbol then valid
+        else if (
+          col - 1 >= 0 &&
+          row + 1 <= rowAreaLimitRow &&
+          isSymbol(area[col - 1][row + 1], "Sym")
+        ) {
+          tempContainer.push(area[col][row]);
+        }
+        //if next is symbol then valid
+        else if (row + 1 <= rowAreaLimitRow && isSymbol(area[col][row + 1])) {
+          tempContainer.push(area[col][row], "Sym");
+        } else if (row + 1 <= rowAreaLimitRow && isNumber(area[col][row + 1])) {
+          tempContainer.push(area[col][row]);
+        }
+
+        //if previus is symbol or number then valid
+        else if (row - 1 >= 0 && isSymbol(area[col][row - 1])) {
+          tempContainer.push(area[col][row], "Sym");
+        } else if (row - 1 >= 0 && isNumber(area[col][row - 1])) {
+          tempContainer.push(area[col][row]);
+        }
+      } else if (area[col][row] === ".") {
+        console.log(tempContainer);
+        // check if symb in array
+        //!!!!!!!!!!!here you have a problem because you got multiple "Sym"s in array!!!!!!!!!!1
+        if (tempContainer.indexOf("Sym") > -1) {
+          tempContainer.splice(tempContainer.indexOf("Sym"), 1);
+          searchNum.push(parseInt(tempContainer.join("")));
+          tempContainer = [];
         } else {
-          game.possible = false;
+          tempContainer = [];
         }
       }
-    });
-  });
-  //console.log(elfBag);
-  console.log(games);
 
-  games.forEach((game) => {
-    game.possible ? (result += game.id) : (result = result);
-  });
-  console.log(result);
+      //if down right diagonal is symbol then valid
+    }
+    console.log(tempContainer);
+    console.log(searchNum);
+  }
+}
+
+function isNumber(input) {
+  if (!isNaN(input)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function isSymbol(input) {
+  if (isNumber(input) || input === ".") {
+    return false;
+  } else {
+    return true;
+  }
 }
