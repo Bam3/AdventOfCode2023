@@ -32,12 +32,12 @@ function start(inputFile) {
   //v
   //  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
   // ['4', '6', '7', '.', '.', '1', '1', '4', '.', '.']
-  // ['.', '.', '.', '*', '.', '.', '.', '.', '.', '.']
+  // ['.', '.', '*', '.', '.', '.', '.', '.', '.', '.']
   // ['.', '.', '3', '5', '.', '.', '6', '3', '3', '.']
   // ['.', '.', '.', '.', '.', '.', '#', '.', '.', '.']
   // ['6', '1', '7', '*', '.', '.', '.', '.', '.', '.']
-  // ['.', '.', '.', '.', '.', '+', '.', '5', '8', '.']
-  // ['.', '.', '5', '9', '2', '.', '.', '.', '.', '.']
+  // ['.', '.', '.', '.', '.', '.', '.', '5', '8', '.']
+  // ['.', '*', '5', '9', '2', '.', '.', '.', '.', '.']
   // ['.', '.', '.', '.', '.', '.', '7', '5', '5', '.']
   // ['.', '.', '.', '$', '.', '*', '.', '.', '.', '.']
   // ['.', '6', '6', '4', '.', '5', '9', '8', '.', '.']
@@ -82,9 +82,9 @@ function start(inputFile) {
         else if (
           col - 1 >= 0 &&
           row + 1 <= rowAreaLimitRow &&
-          isSymbol(area[col - 1][row + 1], "Sym")
+          isSymbol(area[col - 1][row + 1])
         ) {
-          tempContainer.push(area[col][row]);
+          tempContainer.push(area[col][row], "Sym");
         }
         //if next is symbol then valid
         else if (row + 1 <= rowAreaLimitRow && isSymbol(area[col][row + 1])) {
@@ -100,23 +100,26 @@ function start(inputFile) {
           tempContainer.push(area[col][row]);
         }
       } else if (area[col][row] === ".") {
-        console.log(tempContainer);
+        //console.log(tempContainer);
         // check if symb in array
-        //!!!!!!!!!!!here you have a problem because you got multiple "Sym"s in array!!!!!!!!!!1
-        if (tempContainer.indexOf("Sym") > -1) {
-          tempContainer.splice(tempContainer.indexOf("Sym"), 1);
-          searchNum.push(parseInt(tempContainer.join("")));
-          tempContainer = [];
-        } else {
-          tempContainer = [];
-        }
+        //!!!!!!!!!!!infront of is not working!!!!!!!!!!1
+        tempContainer.forEach((e) => {
+          if (tempContainer.indexOf("Sym") > -1) {
+            do {
+              tempContainer.splice(tempContainer.indexOf("Sym"), 1);
+            } while (tempContainer.indexOf("Sym") > -1);
+            searchNum.push(parseInt(tempContainer.join("")));
+            tempContainer = [];
+          } else {
+            tempContainer = [];
+          }
+        });
       }
-
+      console.log(searchNum);
       //if down right diagonal is symbol then valid
     }
-    console.log(tempContainer);
-    console.log(searchNum);
   }
+  console.log(searchNum.reduce((a, b) => a + b, 0));
 }
 
 function isNumber(input) {
