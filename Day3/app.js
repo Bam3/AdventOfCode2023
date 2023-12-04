@@ -42,28 +42,41 @@ function start(inputFile) {
     for (let row = 0; row < area[col].length; row++) {
       let checkNum = {
         number: 0,
-        startCoo: [0,0],
-        endCoo: [0,0],
+        startCoo: [0, 0],
+        endCoo: [0, 0],
         valid: false,
-      }
+      };
       // get number and location
       if (isNumber(area[col][row])) {
         let midBufferNum = [];
-        checkNum.startCoo = [col, row]
-        midBufferNum.push(area[col][row])
+        checkNum.startCoo = [col, row];
+        midBufferNum.push(area[col][row]);
         // searching for numbers until end of type numb
         for (let r = row + 1; r < area[col].length; r++) {
           if (isNumber(area[col][r])) {
-            midBufferNum.push(area[col][r])
+            midBufferNum.push(area[col][r]);
             row = r;
           } else break;
         }
-        checkNum.number = parseInt(midBufferNum.join(""))
-        checkNum.endCoo = [col, row]
+        checkNum.number = parseInt(midBufferNum.join(""));
+        checkNum.endCoo = [col, row];
         //check if the number is valid
-        for (let inC = checkNum.startCoo[0] - 1; inC <= checkNum.startCoo[0] + 1; inC++) {
-          for (let inR = checkNum.startCoo[1] - 1; inR <= checkNum.endCoo[1] + 1; inR++) {
-            if (inC >= 0 && inR >= 0 && inC <= colAreaLimit && inR <= rowAreaLimitRow) {
+        for (
+          let inC = checkNum.startCoo[0] - 1;
+          inC <= checkNum.startCoo[0] + 1;
+          inC++
+        ) {
+          for (
+            let inR = checkNum.startCoo[1] - 1;
+            inR <= checkNum.endCoo[1] + 1;
+            inR++
+          ) {
+            if (
+              inC >= 0 &&
+              inR >= 0 &&
+              inC <= colAreaLimit &&
+              inR <= rowAreaLimitRow
+            ) {
               if (isSymbol(area[inC][inR])) {
                 checkNum.valid = true;
                 break;
@@ -71,15 +84,15 @@ function start(inputFile) {
             }
           }
         }
-        tempContainer.push(checkNum)       
+        tempContainer.push(checkNum);
       }
     }
   }
-  console.log(tempContainer)
+  console.log(tempContainer);
   tempContainer.forEach((number) => {
-    number.valid ? result += number.number : result = result
-  })
-  console.log(result)
+    number.valid ? (result += number.number) : (result = result);
+  });
+  console.log(result);
 }
 
 function isNumber(input) {
