@@ -17,6 +17,13 @@ function start(inputFile) {
   let inputFileSplit = inputFile.trim().split("\n");
   let area = [];
   let searchNum = [];
+  
+  let checkNum = {
+    number: 0,
+    startCoo: [0,0],
+    endCoo: [0,0],
+    valid: false,
+  }
 
   inputFileSplit.map((line) => {
     area.push(line.split(""));
@@ -89,18 +96,18 @@ function start(inputFile) {
         //if next is symbol then valid
         else if (row + 1 <= rowAreaLimitRow && isSymbol(area[col][row + 1])) {
           tempContainer.push(area[col][row], "Sym");
+        } else if (row - 1 >= 0 && isSymbol(area[col][row - 1])) {
+          tempContainer.push(area[col][row], "Sym");
         } else if (row + 1 <= rowAreaLimitRow && isNumber(area[col][row + 1])) {
+          tempContainer.push(area[col][row]);
+        } else if (row - 1 >= 0 && isNumber(area[col][row - 1])) {
           tempContainer.push(area[col][row]);
         }
 
         //if previus is symbol or number then valid
-        else if (row - 1 >= 0 && isSymbol(area[col][row - 1])) {
-          tempContainer.push(area[col][row], "Sym");
-        } else if (row - 1 >= 0 && isNumber(area[col][row - 1])) {
-          tempContainer.push(area[col][row]);
-        }
+         
       } else if (area[col][row] === ".") {
-        //console.log(tempContainer);
+        console.log(tempContainer);
         // check if symb in array
         //!!!!!!!!!!!infront of is not working!!!!!!!!!!1
         tempContainer.forEach((e) => {
