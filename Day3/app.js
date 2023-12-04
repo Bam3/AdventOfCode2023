@@ -18,6 +18,8 @@ function start(inputFile) {
   let area = [];
   let result = 0;
   let tempContainer = [];
+  let possibleGears = [];
+  let gears = [];
   inputFileSplit.map((line) => {
     area.push(line.trim().split(""));
   });
@@ -38,6 +40,7 @@ function start(inputFile) {
   // '7' ['.', '.', '.', '.', '.', '.', '7', '5', '5', '.']
   // '8' ['.', '.', '.', '$', '.', '*', '.', '.', '.', '.']
   // '9' ['.', '6', '6', '4', '.', '5', '9', '8', '.', '.']
+
   for (let col = 0; col < area.length; col++) {
     for (let row = 0; row < area[col].length; row++) {
       let checkNum = {
@@ -45,6 +48,7 @@ function start(inputFile) {
         startCoo: [0, 0],
         endCoo: [0, 0],
         valid: false,
+        gear: [0, 0],
       };
       // get number and location
       if (isNumber(area[col][row])) {
@@ -77,8 +81,10 @@ function start(inputFile) {
               inC <= colAreaLimit &&
               inR <= rowAreaLimitRow
             ) {
-              if (isSymbol(area[inC][inR])) {
+              if (isGear(area[inC][inR])) {
                 checkNum.valid = true;
+                checkNum.gear = [inC, inR];
+                gears.push([inC, inR]);
                 break;
               }
             }
@@ -88,10 +94,22 @@ function start(inputFile) {
       }
     }
   }
-  console.log(tempContainer);
-  tempContainer.forEach((number) => {
-    number.valid ? (result += number.number) : (result = result);
+  //possible gears
+  tempContainer.forEach((num) => {
+    if (num.valid) {
+      possibleGears.push(num);
+    }
   });
+  for (let i = 0; i < possibleGears.length; i++) {
+    for (let j = i + 1; j < possibleGears.length; j++) {
+      if (
+        possibleGears[i].gear[0] === possibleGears[j].gear[0] &&
+        possibleGears[i].gear[1] === possibleGears[j].gear[1]
+      ) {
+        result += possibleGears[i].number * possibleGears[j].number;
+      }
+    }
+  }
   console.log(result);
 }
 
@@ -108,5 +126,13 @@ function isSymbol(input) {
     return false;
   } else {
     return true;
+  }
+}
+
+function isGear(input) {
+  if (input === "*") {
+    return true;
+  } else {
+    return false;
   }
 }
