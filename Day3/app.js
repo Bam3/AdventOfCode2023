@@ -16,24 +16,14 @@ function loadHandler(event) {
 function start(inputFile) {
   let inputFileSplit = inputFile.trim().split("\n");
   let area = [];
-  let searchNum = [];
-  
-  let checkNum = {
-    number: 0,
-    startCoo: [0,0],
-    endCoo: [0,0],
-    valid: false,
-  }
-
+  let result = 0;
+  let tempContainer = [];
   inputFileSplit.map((line) => {
-    area.push(line.split(""));
+    area.push(line.trim().split(""));
   });
   // 10 x 10
   let colAreaLimit = area.length - 1;
   let rowAreaLimitRow = area[0].length - 1;
-  console.log(area.length, colAreaLimit);
-  console.log(area[0].length, rowAreaLimitRow);
-
   //row ->
   //| col
   //v
@@ -49,84 +39,47 @@ function start(inputFile) {
   // ['.', '.', '.', '$', '.', '*', '.', '.', '.', '.']
   // ['.', '6', '6', '4', '.', '5', '9', '8', '.', '.']
   for (let col = 0; col < area.length; col++) {
-    let tempContainer = [];
     for (let row = 0; row < area[col].length; row++) {
-      //console.log(col, row);
-      //if number go in
-      if (isNumber(area[col][row])) {
-        if (
-          col + 1 <= colAreaLimit &&
-          row + 1 <= rowAreaLimitRow &&
-          isSymbol(area[col + 1][row + 1])
-        ) {
-          tempContainer.push(area[col][row], "Sym");
-        }
-        //if down is symbol then valid
-        else if (col + 1 <= colAreaLimit && isSymbol(area[col + 1][row])) {
-          tempContainer.push(area[col][row], "Sym");
-        }
-        //if down left diagonal is symbol then valid
-        else if (
-          col + 1 <= colAreaLimit &&
-          row - 1 >= 0 &&
-          isSymbol(area[col + 1][row - 1])
-        ) {
-          tempContainer.push(area[col][row], "Sym");
-        }
-        //if up left diagonal is symbol then valid
-        else if (
-          col - 1 >= 0 &&
-          row - 1 >= 0 &&
-          isSymbol(area[col - 1][row - 1])
-        ) {
-          tempContainer.push(area[col][row], "Sym");
-        }
-        //if up is symbol then valid
-        else if (col - 1 >= 0 && isSymbol(area[col - 1][row])) {
-          tempContainer.push(area[col][row], "Sym");
-        }
-        //if up right diagonal is symbol then valid
-        else if (
-          col - 1 >= 0 &&
-          row + 1 <= rowAreaLimitRow &&
-          isSymbol(area[col - 1][row + 1])
-        ) {
-          tempContainer.push(area[col][row], "Sym");
-        }
-        //if next is symbol then valid
-        else if (row + 1 <= rowAreaLimitRow && isSymbol(area[col][row + 1])) {
-          tempContainer.push(area[col][row], "Sym");
-        } else if (row - 1 >= 0 && isSymbol(area[col][row - 1])) {
-          tempContainer.push(area[col][row], "Sym");
-        } else if (row + 1 <= rowAreaLimitRow && isNumber(area[col][row + 1])) {
-          tempContainer.push(area[col][row]);
-        } else if (row - 1 >= 0 && isNumber(area[col][row - 1])) {
-          tempContainer.push(area[col][row]);
-        }
-
-        //if previus is symbol or number then valid
-         
-      } else if (area[col][row] === ".") {
-        console.log(tempContainer);
-        // check if symb in array
-        //!!!!!!!!!!!infront of is not working!!!!!!!!!!1
-        tempContainer.forEach((e) => {
-          if (tempContainer.indexOf("Sym") > -1) {
-            do {
-              tempContainer.splice(tempContainer.indexOf("Sym"), 1);
-            } while (tempContainer.indexOf("Sym") > -1);
-            searchNum.push(parseInt(tempContainer.join("")));
-            tempContainer = [];
-          } else {
-            tempContainer = [];
-          }
-        });
+      let checkNum = {
+        number: 0,
+        startCoo: [0,0],
+        endCoo: [0,0],
+        valid: false,
       }
-      console.log(searchNum);
-      //if down right diagonal is symbol then valid
+      // get number and location
+      if (isNumber(area[col][row])) {
+        let midBufferNum = [];
+        checkNum.startCoo = [col, row]
+        midBufferNum.push(area[col][row])
+        // searching for numbers until end of type numb
+        for (let r = row + 1; r < area[col].length; r++) {
+          if (isNumber(area[col][r])) {
+            midBufferNum.push(area[col][r])
+            row = r;
+          } else break;
+        }
+        checkNum.number = parseInt(midBufferNum.join(""))
+        checkNum.endCoo = [col, row]
+        //check if the number is valid
+        for (let inC = checkNum.startCoo[0] - 1; inC <= checkNum.startCoo[0] + 1; inC++) {
+          for (let inR = checkNum.startCoo[1] - 1; inR <= checkNum.endCoo[1] + 1; inR++) {
+            if (inC >= 0 && inR >= 0 && inC <= colAreaLimit && inR <= rowAreaLimitRow) {
+              if (isSymbol(area[inC][inR])) {
+                checkNum.valid = true;
+                break;
+              }
+            }
+          }
+        }
+        tempContainer.push(checkNum)       
+      }
     }
   }
-  console.log(searchNum.reduce((a, b) => a + b, 0));
+  console.log(tempContainer)
+  tempContainer.forEach((number) => {
+    number.valid ? result += number.number : result = result
+  })
+  console.log(result)
 }
 
 function isNumber(input) {
