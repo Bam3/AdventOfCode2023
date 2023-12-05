@@ -17,6 +17,7 @@ function start(inputFile) {
   let listOfPlays = [];
   let card = {};
   let result = 0;
+  let midBuff = [];
   // Card 1: 41 '48' '83' '86' '17' | '83' '86'  6 31 '17'  9 '48' 53 --8
   // Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19 -- 2
   // Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1 -- 2
@@ -31,19 +32,21 @@ function start(inputFile) {
     .forEach((play) => {
       play.trim().split(": ")[0].split(" ")[1];
       card.cardNumer = play.split(": ")[0].split(" ")[1];
-      card.winningNumbers = play
-        .trim()
-        .split(": ")[1]
-        .split(" | ")[0]
-        .split(" ");
+      card.winningNumbers = 
+      play
+      .trim()
+      .split(": ")[1]
+      .split(" | ")[0]
+      .split(" ")
       card.myNumbers = play.trim().split(": ")[1].split(" | ")[1].split(" ");
       card.nums = [];
+
       listOfPlays.push(card);
       card = {
         cardNumer: 0,
         winningNumbers: [],
         myNumbers: [],
-        nums: [].length,
+        nums: [],
       };
     });
   console.log(cleanArrayOfSpaces(listOfPlays[0].myNumbers));
@@ -55,8 +58,20 @@ function start(inputFile) {
           play.nums.push(myNum);
         }
       });
+      play.nums.forEach((n) => {
+        if (n !== "") {
+          midBuff.push(n)
+        }  
+      })
+      play.nums = []
+      play.nums = midBuff
+      midBuff = []
     });
   });
+  listOfPlays.forEach((play) => {
+    
+   })
+
   listOfPlays.forEach((play) => {
     if (play.nums.length > 0) {
       result = result + Math.pow(2, play.nums.length - 1);
@@ -75,4 +90,11 @@ function cleanArrayOfSpaces(array) {
     }
     return array;
   });
+}
+function isNumber(input) {
+  if (!isNaN(input)) {
+    return true;
+  } else {
+    return false;
+  }
 }
