@@ -17,7 +17,6 @@ function start(inputFile) {
   let listOfPlays = [];
   let card = {};
   let result = 0;
-  let midBuff = [];
   // Card 1: 41 '48' '83' '86' '17' | '83' '86'  6 31 '17'  9 '48' 53 --8
   // Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19 -- 2
   // Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1 -- 2
@@ -32,12 +31,12 @@ function start(inputFile) {
     .forEach((play) => {
       play.trim().split(": ")[0].split(" ")[1];
       card.cardNumer = play.split(": ")[0].split(" ")[1];
-      card.winningNumbers = play
-        .trim()
-        .split(": ")[1]
-        .split(" | ")[0]
-        .split(" ");
-      card.myNumbers = play.trim().split(": ")[1].split(" | ")[1].split(" ");
+      card.winningNumbers = cleanMyArray(
+        play.trim().split(": ")[1].split(" | ")[0].split(" ")
+      );
+      card.myNumbers = cleanMyArray(
+        play.trim().split(": ")[1].split(" | ")[1].split(" ")
+      );
       card.nums = [];
 
       listOfPlays.push(card);
@@ -48,14 +47,6 @@ function start(inputFile) {
             card.nums.push(myNum);
           }
         });
-        card.nums.forEach((n) => {
-          if (n !== "") {
-            midBuff.push(n);
-          }
-        });
-        card.nums = [];
-        card.nums = midBuff;
-        midBuff = [];
       });
       if (card.nums.length > 0) {
         result += Math.pow(2, card.nums.length - 1);
@@ -78,4 +69,17 @@ function isNumber(input) {
   } else {
     return false;
   }
+}
+
+function cleanMyArray(array) {
+  let midBuff = [];
+  array.forEach((n) => {
+    if (n !== "") {
+      midBuff.push(n);
+    }
+  });
+  array = [];
+  array = midBuff;
+  midBuff = [];
+  return array;
 }
