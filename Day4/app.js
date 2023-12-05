@@ -32,16 +32,34 @@ function start(inputFile) {
     .forEach((play) => {
       play.trim().split(": ")[0].split(" ")[1];
       card.cardNumer = play.split(": ")[0].split(" ")[1];
-      card.winningNumbers = 
-      play
-      .trim()
-      .split(": ")[1]
-      .split(" | ")[0]
-      .split(" ")
+      card.winningNumbers = play
+        .trim()
+        .split(": ")[1]
+        .split(" | ")[0]
+        .split(" ");
       card.myNumbers = play.trim().split(": ")[1].split(" | ")[1].split(" ");
       card.nums = [];
 
       listOfPlays.push(card);
+
+      card.winningNumbers.forEach((winNum) => {
+        card.myNumbers.forEach((myNum) => {
+          if (winNum === myNum) {
+            card.nums.push(myNum);
+          }
+        });
+        card.nums.forEach((n) => {
+          if (n !== "") {
+            midBuff.push(n);
+          }
+        });
+        card.nums = [];
+        card.nums = midBuff;
+        midBuff = [];
+      });
+      if (card.nums.length > 0) {
+        result += Math.pow(2, card.nums.length - 1);
+      }
       card = {
         cardNumer: 0,
         winningNumbers: [],
@@ -49,48 +67,11 @@ function start(inputFile) {
         nums: [],
       };
     });
-  console.log(cleanArrayOfSpaces(listOfPlays[0].myNumbers));
-  console.log(listOfPlays);
-  listOfPlays.forEach((play) => {
-    play.winningNumbers.forEach((winNum) => {
-      play.myNumbers.forEach((myNum) => {
-        if (winNum === myNum) {
-          play.nums.push(myNum);
-        }
-      });
-      play.nums.forEach((n) => {
-        if (n !== "") {
-          midBuff.push(n)
-        }  
-      })
-      play.nums = []
-      play.nums = midBuff
-      midBuff = []
-    });
-  });
-  listOfPlays.forEach((play) => {
-    
-   })
 
-  listOfPlays.forEach((play) => {
-    if (play.nums.length > 0) {
-      result = result + Math.pow(2, play.nums.length - 1);
-      console.log(Math.pow(2, play.nums.length - 1));
-      console.log(play.nums.length, "len");
-    }
-  });
   console.log(listOfPlays);
   console.log(result);
 }
 
-function cleanArrayOfSpaces(array) {
-  array.forEach((e) => {
-    if (e === "") {
-      array.splice(array.indexOf(e), 1);
-    }
-    return array;
-  });
-}
 function isNumber(input) {
   if (!isNaN(input)) {
     return true;
