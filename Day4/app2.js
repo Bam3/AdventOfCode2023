@@ -15,7 +15,7 @@ function loadHandler(event) {
 
 function start(inputFile) {
   let listOfPlays = [];
-  let card = {};
+  let card = { instances: 0 };
   let result = 0;
   // Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
   // Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
@@ -25,12 +25,14 @@ function start(inputFile) {
   // Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11
   // result = 13
   // 1111 -> 2^0 + 2^1 + 2^2 + 2^3 + 2^4
-
+  //-------------------------PART1-------------------------
   inputFile
     .trim()
     .split("\n")
     .forEach((play) => {
-      card.cardNumer = cleanMyArray(play.split(": ")[0].split(" "))[1];
+      card.cardNumer = parseInt(
+        cleanMyArray(play.split(": ")[0].split(" "))[1]
+      );
       card.winningNumbers = cleanMyArray(
         play.trim().split(": ")[1].split(" | ")[0].split(" ")
       );
@@ -45,6 +47,7 @@ function start(inputFile) {
         card.myNumbers.forEach((myNum) => {
           if (winNum === myNum) {
             card.nums.push(myNum);
+            card.numberOfWinningCards = card.nums.length;
           }
         });
       });
@@ -56,9 +59,31 @@ function start(inputFile) {
         winningNumbers: [],
         myNumbers: [],
         nums: [],
+        numberOfWinningCards: 0,
+        instances: 0,
       };
     });
+  //-------------------------PART1-------------------------
 
+  //-------------------------PART2-------------------------
+  for (let play = 0; play < listOfPlays.length; play++) {
+    //add instances
+    listOfPlays[play].instances++;
+
+    if (listOfPlays[play].numberOfWinningCards !== 0) {
+      let start = play + 1;
+      let end = listOfPlays[play].numberOfWinningCards + play;
+
+      for (let i = start; i < end + 1; i++) {
+        listOfPlays[i].instances =
+          listOfPlays[i].instances + listOfPlays[play].instances;
+      }
+    }
+  }
+  result = 0;
+  listOfPlays.forEach((game) => {
+    result += game.instances;
+  });
   console.log(listOfPlays);
   console.log(result);
 }
