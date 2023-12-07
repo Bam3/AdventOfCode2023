@@ -14,11 +14,15 @@ function loadHandler(event) {
 }
 
 function start(inputFile) {
-  //seeds: 79 14 55 13
-
-  //seed-to-soil map:
-  //50 98 2
-  //52 50 48
+  //                            {
+  //seeds: 79 14 55 13            seeds: [79, 14, 55, 13]
+//                                    key     :    value
+  //seed-to-soil map:             seed-to-soil: [
+  //50 98 2                                      [50,98,2],
+  //52 50 48                                     [52,50,48]
+  //                                             ]
+  //
+  //
 
   //soil-to-fertilizer map:
   //0 15 37
@@ -47,17 +51,36 @@ function start(inputFile) {
   //humidity-to-location map:
   //60 56 37
   //56 93 4
+  let tempArr = []
+  let almanac = {}
   let instructions = [];
   let seeds = [];
-  let data = inputFile.trim().split("\n\n");
+  let data = inputFile.trim().split("\r\n");
   console.log(data, "data");
+
   data.forEach((line) => {
-    if (line.split(": ")[0] === "seeds") {
-      seeds = line.split(": ")[1].split(" ");
+    //if (line.split(": ")[0] === "seeds") {
+    //  almanac[data[0].split(": ")[0]] = data[0].split(": ")[1].split(" ");
+    //}
+    if (line === "") {
+      if (tempArr.length > 0)
+          for (let i = 0; i < tempArr.length; i++) {
+            if (tempArr[i].split(": ")[0] === "seeds") {
+              almanac[tempArr[i].split(": ")[0]] = tempArr[i].split(": ")[1].split(" ");
+            } else if(i===0) {
+              almanac[tempArr[0].split(" ")[0]] = [];
+            } else {
+              almanac[tempArr[0].split(" ")[0]] += [tempArr[i].split(" ")];
+              //Object.assign(almanac[tempArr[0].split(" ")[0]], {i: tempArr[i].split(" ")})   
+            }
+          }
+          tempArr = []
+    } else {
+      tempArr.push(line)
     }
   });
-  console.log(seeds);
-  console.log(range(98, 100, 1));
+  console.log(almanac);
+  //console.log(range(98, 100, 1));
 }
 const range = (start, stop, step) =>
   Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
