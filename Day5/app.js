@@ -55,8 +55,8 @@ function start(inputFile) {
   let almanac = {};
   let middle = [];
   let found = false;
-  let data = inputFile.trim().split("\n");
-  //console.log(data, "data");
+  let data = inputFile.trim().split("\r\n");
+  console.log(data, "data");
 
   data.forEach((line) => {
     if (line === "") {
