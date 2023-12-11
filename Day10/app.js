@@ -14,34 +14,29 @@ function loadHandler(event) {
 }
 
 function start(inputFile) {
-  console.log(inputFile.split("\n").map((line) => line.split(""))[41][91]);
   let myInput = inputFile.split("\n").map((line) => line.split(""));
+  console.log(myInput)
 
   let result = [];
   let done = false;
   let middArr = [];
-
-  myInput.forEach((element) => {
-    done = true;
-    middArr.push(element);
-    middArr.push(reduceArray(element));
-    do {
-      if (allEqual(middArr.at(-1))) {
-        if (middArr.length === 2) {
-          result.push(middArr[0][0] + middArr[1][0] * -1);
-          middArr = [];
-          break;
-        }
-      } else {
-        middArr.push(reduceArray(middArr.at(-1)));
-        if (allEqual(middArr.at(-1))) {
-          result.push(getTheResult2(middArr));
-          middArr = [];
-          done = false;
-        }
-      }
-    } while (done);
+  let cooS = [];
+  let directions = {
+    "|": [0,0],
+    "-": [0,0],
+    "L": [0,0],
+    "J" : [0,0],
+    "7" : [0,0],  
+    "F" : [0,0],
+    "." : [0,0],
+  }
+  myInput.forEach((col, indexCol) => {
+  col.forEach((row, indexRow) => {
+    if (row === "S") {
+      cooS = [indexCol, indexRow]
+    }
+  })
   });
 
-  console.log(result.reduce((a, b) => a + b));
+  console.log(cooS," aje?");
 }
